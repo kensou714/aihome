@@ -1,271 +1,227 @@
-<!DOCTYPE html>
-
-<html>
-
-    <head>
-<meta charset="UTF-8">
-        <style>
-
-            html {
-
-                height: 100%;
-
-            }
-
-            body {
-
-                margin: 0px;
-
-                height: 100%;
-
-                display: flex;
-
-                flex-flow: column nowrap;
-
-                justify-content: center;
-
-                align-items: center;
-
-            }
-
-            .line-box {
-
-                display: flex;
-
-                flex-flow: row nowrap;
-
-                justify-content: center;
-
-                align-items: center;
-
-                margin-bottom: 60px;
-
-            }
-
-            input {
-
-                outline: none;
-
-                border: 0px;
-
-                border-bottom: 1px solid #e5e5e5;
-
-                height: 100px;
-
-                width: 800px;
-
-                font-size: 25pt;
-
-            }
-
-            input::placeholder {
-
-                color: #c5c5d5;
-
-            }
-
-            button {
-
-                outline: none;
-
-                height: 100pt;
-
-                width: 200pt;
-
-                border: 0px;
-
-                margin: 0pt 20pt 0pt 20pt;
-
-                border-radius: 3pt;
-
-                cursor: pointer;
-                
-                font-size: 25pt;
-
-            }
-
-            button:hover {
-
-                background-color: black;
-
-                color: white;
-
-            }
-
-        </style>
-
-        <script>
-
-            const decodeDic = {
-
-                "\u200B": "0",
-
-                "\uFEFF": "1",
-
-                "\u200D": "2",
-
-                "\u200C": "3",
-
-                "\u200E": "4",
-
-                "\u200F": "5",
-
-            };
-
-            const encodeDic = {
-
-                0: "\u200B",
-
-                1: "\uFEFF",
-
-                2: "\u200D",
-
-                3: "\u200C",
-
-                4: "\u200E",
-
-                5: "\u200F",
-
-            };
-
-            function getUnicode(charCode) {
-
-                return charCode.charCodeAt(0).toString(16);
-
-            }
-
-            function getSixCode(charCode) {
-
-                return parseInt(charCode.charCodeAt(0), 16).toString(6);
-
-            }
-
-            function PrefixInteger(s, len) {
-
-                return (Array(len).join("0") + s).slice(-len);
-
-            }
-
-            window.onload = function () {
-
-                var plaintext = document.getElementById("plaintext");
-
-                var ciphetext = document.getElementById("ciphetext");
-
-                document.getElementById("encode-btn").onclick = function () {
-
-                    let text = plaintext.value;
-
-                    plaintext.value = "";
-
-                    ciphetext.value = "必";
-
-                    for (let char of text) {
-
-                        const charUniSix = PrefixInteger(getSixCode(char), 7);
-
-                        let encodeChar = "";
-
-                        for (let c of charUniSix) {
-
-                            encodeChar += encodeDic[c];
-
-                        }
-
-                        ciphetext.value += encodeChar;
-
-                    }
-
-                    ciphetext.value += "胜";
-
-                };
-
-                document.getElementById("decode-btn").onclick = function () {
-
-                    const text = ciphetext.value.slice(1, ciphetext.value.length - 1);
-
-                    len = Math.floor(text.length / 7);
-
-                    let decode = "";
-
-                    for (let i = 0; i < len; i++) {
-
-                        const encodeChar = text.substring(i * 7, i * 7 + 7);
-
-                        let charUniSix = "";
-
-                        for (let char of encodeChar) {
-
-                            charUniSix += decodeDic[char];
-
-                        }
-
-                        decode += String.fromCharCode(parseInt(charUniSix, 6).toString(16));
-
-                    }
-
-                    plaintext.value = decode;
-
-                    ciphetext.value = "";
-
-                };
-
-                document.getElementById("copy-btn").onclick = function () {
-
-                    const input = document.createElement("input");
-
-                    input.value = ciphetext.value;
-
-                    input.style = "height:0px;width=0px;";
-
-                    document.body.appendChild(input);
-
-                    input.select();
-
-                    input.setSelectionRange(0, input.value.length);
-
-                    document.execCommand("Copy");
-
-                    document.body.removeChild(input);
-
-                };
-
-            };
-
-        </script>
-
-    </head>
-
-    <body>
-
-        <div class="line-box">
-
-            <input id="plaintext" type="text" placeholder="请输入要加密的文字" />
-
-        </div>
-
-        <div class="line-box">
-
-            <input id="ciphetext" type="text" placeholder="请输入要解密的文字" />
-
-        </div>
-
-        <div class="line-box">
-
-            <button id="encode-btn">加密</button>
-
-            <button id="decode-btn">解密</button>
-
-            <button id="copy-btn">复制密文</button>
-
-        </div>
-        <div class="line-box" style="font-size: 25pt;">
-
-            临时制作，页面尚不完善，如有疑问联系制作人刘桐序
-
-        </div>
-
-    </body>
-
-</html>
-
+<html><head><base href="https://simulacrum.ai/virtual-instruments/" />
+<title>SynthesiZen - Virtual Electronic Keyboard</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(45deg, #1a2a6c, #b21f1f, #fdbb2d);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+  }
+  .synth-container {
+    background: rgba(0,0,0,0.8);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+  }
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .control label {
+    margin-bottom: 5px;
+  }
+  .control input {
+    width: 100px;
+  }
+  .keyboard {
+    display: flex;
+  }
+  .key {
+    width: 40px;
+    height: 150px;
+    background: #fff;
+    border: 1px solid #000;
+    margin-right: 2px;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .key:active, .key.active {
+    background: #ccc;
+  }
+  .key.black {
+    background: #000;
+    height: 100px;
+    width: 30px;
+    margin-left: -15px;
+    margin-right: -15px;
+    z-index: 2;
+  }
+  .key.black:active, .key.black.active {
+    background: #333;
+  }
+  .visualizer {
+    width: 100%;
+    height: 100px;
+    background: rgba(0,0,0,0.5);
+    margin-top: 20px;
+    border-radius: 5px;
+  }
+</style>
+</head>
+<body>
+  <div class="synth-container">
+    <h1>SynthesiZen</h1>
+    <div class="controls">
+      <div class="control">
+        <label for="waveform">Waveform</label>
+        <select id="waveform">
+          <option value="sine">Sine</option>
+          <option value="square">Square</option>
+          <option value="sawtooth">Sawtooth</option>
+          <option value="triangle">Triangle</option>
+        </select>
+      </div>
+      <div class="control">
+        <label for="attack">Attack</label>
+        <input type="range" id="attack" min="0" max="1" step="0.1" value="0.1">
+      </div>
+      <div class="control">
+        <label for="release">Release</label>
+        <input type="range" id="release" min="0" max="1" step="0.1" value="0.1">
+      </div>
+      <div class="control">
+        <label for="volume">Volume</label>
+        <input type="range" id="volume" min="0" max="1" step="0.1" value="0.5">
+      </div>
+    </div>
+    <div class="keyboard">
+      <div class="key" data-note="C4"></div>
+      <div class="key black" data-note="C#4"></div>
+      <div class="key" data-note="D4"></div>
+      <div class="key black" data-note="D#4"></div>
+      <div class="key" data-note="E4"></div>
+      <div class="key" data-note="F4"></div>
+      <div class="key black" data-note="F#4"></div>
+      <div class="key" data-note="G4"></div>
+      <div class="key black" data-note="G#4"></div>
+      <div class="key" data-note="A4"></div>
+      <div class="key black" data-note="A#4"></div>
+      <div class="key" data-note="B4"></div>
+    </div>
+    <canvas class="visualizer"></canvas>
+  </div>
+
+<script>
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const keys = document.querySelectorAll('.key');
+const waveformSelect = document.getElementById('waveform');
+const attackControl = document.getElementById('attack');
+const releaseControl = document.getElementById('release');
+const volumeControl = document.getElementById('volume');
+const visualizer = document.querySelector('.visualizer');
+const canvasCtx = visualizer.getContext('2d');
+
+let oscillator = null;
+let gainNode = null;
+
+const noteFrequencies = {
+  'C4': 261.63, 'C#4': 277.18, 'D4': 293.66, 'D#4': 311.13,
+  'E4': 329.63, 'F4': 349.23, 'F#4': 369.99, 'G4': 392.00,
+  'G#4': 415.30, 'A4': 440.00, 'A#4': 466.16, 'B4': 493.88
+};
+
+function startNote(note) {
+  const frequency = noteFrequencies[note];
+  
+  oscillator = audioContext.createOscillator();
+  oscillator.type = waveformSelect.value;
+  oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+
+  gainNode = audioContext.createGain();
+  gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+  gainNode.gain.linearRampToValueAtTime(volumeControl.value, audioContext.currentTime + parseFloat(attackControl.value));
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+
+  oscillator.start();
+}
+
+function stopNote() {
+  if (gainNode) {
+    gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + parseFloat(releaseControl.value));
+    setTimeout(() => {
+      if (oscillator) {
+        oscillator.stop();
+        oscillator.disconnect();
+      }
+      if (gainNode) {
+        gainNode.disconnect();
+      }
+    }, releaseControl.value * 1000);
+  }
+}
+
+keys.forEach(key => {
+  key.addEventListener('mousedown', () => {
+    const note = key.dataset.note;
+    startNote(note);
+    key.classList.add('active');
+  });
+
+  key.addEventListener('mouseup', () => {
+    stopNote();
+    key.classList.remove('active');
+  });
+
+  key.addEventListener('mouseleave', () => {
+    stopNote();
+    key.classList.remove('active');
+  });
+});
+
+function drawVisualization() {
+  requestAnimationFrame(drawVisualization);
+
+  const width = visualizer.width;
+  const height = visualizer.height;
+  const analyser = audioContext.createAnalyser();
+  gainNode.connect(analyser);
+
+  analyser.fftSize = 2048;
+  const bufferLength = analyser.frequencyBinCount;
+  const dataArray = new Uint8Array(bufferLength);
+
+  canvasCtx.clearRect(0, 0, width, height);
+  analyser.getByteTimeDomainData(dataArray);
+
+  canvasCtx.lineWidth = 2;
+  canvasCtx.strokeStyle = 'rgb(0, 255, 0)';
+  canvasCtx.beginPath();
+
+  const sliceWidth = width * 1.0 / bufferLength;
+  let x = 0;
+
+  for (let i = 0; i < bufferLength; i++) {
+    const v = dataArray[i] / 128.0;
+    const y = v * height / 2;
+
+    if (i === 0) {
+      canvasCtx.moveTo(x, y);
+    } else {
+      canvasCtx.lineTo(x, y);
+    }
+
+    x += sliceWidth;
+  }
+
+  canvasCtx.lineTo(width, height / 2);
+  canvasCtx.stroke();
+}
+
+drawVisualization();
+
+</script>
+</body></html>

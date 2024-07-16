@@ -1,4 +1,4 @@
-<html><head><base href="https://digikeys.com/"><title>DigiKeys - 18键电子琴模拟器（支持电脑键盘弹奏）</title>
+<html><head><base href="https://digikeys.com/"><title>DigiKeys - 18键电子琴模拟器（支持12音阶变调和和弦）</title>
 <style>
 body {
   font-family: Arial, sans-serif;
@@ -27,7 +27,6 @@ body {
   margin: 0 2px;
   cursor: pointer;
   transition: background-color 0.1s;
-  position: relative;
 }
 .key.black {
   background-color: #333;
@@ -43,18 +42,6 @@ body {
 .key.black.active {
   background-color: #666;
 }
-.key-label {
-  position: absolute;
-  bottom: 5px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 12px;
-  color: #333;
-}
-.key.black .key-label {
-  color: #fff;
-  bottom: 10px;
-}
 .controls {
   margin-top: 20px;
   display: flex;
@@ -65,61 +52,47 @@ select, button {
   padding: 5px 10px;
   font-size: 16px;
 }
-.chords {
+.chord-buttons {
   display: flex;
   justify-content: space-around;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 .chord-button {
-  padding: 10px 15px;
+  padding: 5px 10px;
   font-size: 16px;
   background-color: #4CAF50;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s;
 }
 .chord-button:hover {
   background-color: #45a049;
 }
-.keyboard-guide {
-  margin-top: 20px;
-  text-align: center;
-}
 </style>
 </head>
 <body>
-<h1>DigiKeys - 18键电子琴模拟器（支持电脑键盘弹奏）</h1>
+<h1>DigiKeys - 18键电子琴模拟器（支持12音阶变调和和弦）</h1>
 <div class="piano">
   <div class="keys">
-    <div class="key" data-note="C"><span class="key-label">A</span></div>
-    <div class="key black" data-note="C#"><span class="key-label">W</span></div>
-    <div class="key" data-note="D"><span class="key-label">S</span></div>
-    <div class="key black" data-note="D#"><span class="key-label">E</span></div>
-    <div class="key" data-note="E"><span class="key-label">D</span></div>
-    <div class="key" data-note="F"><span class="key-label">F</span></div>
-    <div class="key black" data-note="F#"><span class="key-label">T</span></div>
-    <div class="key" data-note="G"><span class="key-label">G</span></div>
-    <div class="key black" data-note="G#"><span class="key-label">Y</span></div>
-    <div class="key" data-note="A"><span class="key-label">H</span></div>
-    <div class="key black" data-note="A#"><span class="key-label">U</span></div>
-    <div class="key" data-note="B"><span class="key-label">J</span></div>
-    <div class="key" data-note="C2"><span class="key-label">K</span></div>
-    <div class="key black" data-note="C#2"><span class="key-label">O</span></div>
-    <div class="key" data-note="D2"><span class="key-label">L</span></div>
-    <div class="key black" data-note="D#2"><span class="key-label">P</span></div>
-    <div class="key" data-note="E2"><span class="key-label">;</span></div>
-    <div class="key" data-note="F2"><span class="key-label">'</span></div>
-  </div>
-  <div class="chords">
-    <button class="chord-button" data-chord="C">C和弦</button>
-    <button class="chord-button" data-chord="Dm">Dm和弦</button>
-    <button class="chord-button" data-chord="Em">Em和弦</button>
-    <button class="chord-button" data-chord="F">F和弦</button>
-    <button class="chord-button" data-chord="G">G和弦</button>
-    <button class="chord-button" data-chord="Am">Am和弦</button>
-    <button class="chord-button" data-chord="B">B和弦</button>
+    <div class="key" data-note="C"></div>
+    <div class="key black" data-note="C#"></div>
+    <div class="key" data-note="D"></div>
+    <div class="key black" data-note="D#"></div>
+    <div class="key" data-note="E"></div>
+    <div class="key" data-note="F"></div>
+    <div class="key black" data-note="F#"></div>
+    <div class="key" data-note="G"></div>
+    <div class="key black" data-note="G#"></div>
+    <div class="key" data-note="A"></div>
+    <div class="key black" data-note="A#"></div>
+    <div class="key" data-note="B"></div>
+    <div class="key" data-note="C2"></div>
+    <div class="key black" data-note="C#2"></div>
+    <div class="key" data-note="D2"></div>
+    <div class="key black" data-note="D#2"></div>
+    <div class="key" data-note="E2"></div>
+    <div class="key" data-note="F2"></div>
   </div>
   <div class="controls">
     <select id="instrument">
@@ -146,19 +119,25 @@ select, button {
     <button id="record">录音</button>
     <button id="play" disabled>播放</button>
   </div>
-</div>
-<div class="keyboard-guide">
-  <p>使用键盘上的字母键来弹奏钢琴。白键对应 A、S、D、F、G、H、J、K、L、;、' ，黑键对应 W、E、T、Y、U、O、P。</p>
+  <div class="chord-buttons">
+    <button class="chord-button" data-chord="C">C和弦 (1)</button>
+    <button class="chord-button" data-chord="Dm7">Dm7和弦 (2)</button>
+    <button class="chord-button" data-chord="E">E和弦 (3)</button>
+    <button class="chord-button" data-chord="Fmaj7">Fmaj7和弦 (4)</button>
+    <button class="chord-button" data-chord="G">G和弦 (5)</button>
+    <button class="chord-button" data-chord="Am7">Am7和弦 (6)</button>
+    <button class="chord-button" data-chord="Bm7">Bm7和弦 (7)</button>
+  </div>
 </div>
 
 <script>
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 const keys = document.querySelectorAll('.key');
-const chordButtons = document.querySelectorAll('.chord-button');
 const instrumentSelect = document.getElementById('instrument');
 const transposeSelect = document.getElementById('transpose');
 const recordButton = document.getElementById('record');
 const playButton = document.getElementById('play');
+const chordButtons = document.querySelectorAll('.chord-button');
 
 let isRecording = false;
 let recordedNotes = [];
@@ -173,18 +152,12 @@ const baseFrequencies = {
 
 const chords = {
   'C': ['C', 'E', 'G'],
-  'Dm': ['D', 'F', 'A'],
-  'Em': ['E', 'G', 'B'],
-  'F': ['F', 'A', 'C2'],
+  'Dm7': ['D', 'F', 'A', 'C2'],
+  'E': ['E', 'G#', 'B'],
+  'Fmaj7': ['F', 'A', 'C2', 'E2'],
   'G': ['G', 'B', 'D2'],
-  'Am': ['A', 'C2', 'E2'],
-  'B': ['B', 'D#2', 'F#']
-};
-
-const keyMap = {
-  'a': 'C', 'w': 'C#', 's': 'D', 'e': 'D#', 'd': 'E', 'f': 'F',
-  't': 'F#', 'g': 'G', 'y': 'G#', 'h': 'A', 'u': 'A#', 'j': 'B',
-  'k': 'C2', 'o': 'C#2', 'l': 'D2', 'p': 'D#2', ';': 'E2', "'": 'F2'
+  'Am7': ['A', 'C2', 'E2', 'G2'],
+  'Bm7': ['B', 'D2', 'F#2', 'A2']
 };
 
 function getTransposedFrequency(note) {
@@ -218,18 +191,14 @@ function playNote(note) {
 }
 
 function playChord(chordName) {
-  const notes = chords[chordName];
-  notes.forEach(note => {
+  chords[chordName].forEach(note => {
     playNote(note);
     const key = document.querySelector(`[data-note="${note}"]`);
-    key.classList.add('active');
-    setTimeout(() => key.classList.remove('active'), 300);
+    if (key) {
+      key.classList.add('active');
+      setTimeout(() => key.classList.remove('active'), 300);
+    }
   });
-  
-  if (isRecording) {
-    const currentTime = Date.now() - startTime;
-    recordedNotes.push({ chord: chordName, time: currentTime });
-  }
 }
 
 keys.forEach(key => {
@@ -268,36 +237,56 @@ recordButton.addEventListener('click', () => {
 });
 
 playButton.addEventListener('click', () => {
-  recordedNotes.forEach(item => {
+  recordedNotes.forEach(note => {
     setTimeout(() => {
-      if (item.note) {
-        playNote(item.note);
-        const key = document.querySelector(`[data-note="${item.note}"]`);
+      playNote(note.note);
+      const key = document.querySelector(`[data-note="${note.note}"]`);
+      if (key) {
         key.classList.add('active');
         setTimeout(() => key.classList.remove('active'), 100);
-      } else if (item.chord) {
-        playChord(item.chord);
       }
-    }, item.time);
+    }, note.time);
   });
 });
 
 document.addEventListener('keydown', (event) => {
+  const keyMap = {
+    'a': 'C', 'w': 'C#', 's': 'D', 'e': 'D#', 'd': 'E', 'f': 'F',
+    't': 'F#', 'g': 'G', 'y': 'G#', 'h': 'A', 'u': 'A#', 'j': 'B',
+    'k': 'C2', 'o': 'C#2', 'l': 'D2', 'p': 'D#2', ';': 'E2', "'": 'F2'
+  };
+  
+  const chordKeyMap = {
+    '1': 'C', '2': 'Dm7', '3': 'E', '4': 'Fmaj7', '5': 'G', '6': 'Am7', '7': 'Bm7'
+  };
+  
   const note = keyMap[event.key.toLowerCase()];
+  const chord = chordKeyMap[event.key];
+  
   if (note) {
     const key = document.querySelector(`[data-note="${note}"]`);
-    if (!key.classList.contains('active')) {
+    if (key) {
       key.classList.add('active');
       playNote(note);
     }
+  } else if (chord) {
+    playChord(chord);
   }
 });
 
 document.addEventListener('keyup', (event) => {
+  const keyMap = {
+    'a': 'C', 'w': 'C#', 's': 'D', 'e': 'D#', 'd': 'E', 'f': 'F',
+    't': 'F#', 'g': 'G', 'y': 'G#', 'h': 'A', 'u': 'A#', 'j': 'B',
+    'k': 'C2', 'o': 'C#2', 'l': 'D2', 'p': 'D#2', ';': 'E2', "'": 'F2'
+  };
+  
   const note = keyMap[event.key.toLowerCase()];
   if (note) {
     const key = document.querySelector(`[data-note="${note}"]`);
-    key.classList.remove('active');
+    if (key) {
+      key.classList.remove('active');
+    }
   }
 });
 </script>
